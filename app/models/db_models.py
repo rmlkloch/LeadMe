@@ -13,7 +13,6 @@ class ChatSession(Base):
 
     # Relationships
     messages = relationship("ChatMessage", back_populates="session", cascade="all, delete-orphan")
-    leads = relationship("Lead", back_populates="session", cascade="all, delete-orphan")
 
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
@@ -31,16 +30,20 @@ class Lead(Base):
     __tablename__ = "leads"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String, ForeignKey("chat_sessions.session_id"), nullable=False)
-    name = Column(String, nullable=False)
+    client_id = Column(String, index=True, nullable=False)
+    session_id = Column(String, nullable=False)
     email = Column(String, nullable=False)
-    phone = Column(String, nullable=True)
-    company = Column(String, nullable=True)
-    notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    # Relationships
-    session = relationship("ChatSession", back_populates="leads")
+class Ticket(Base):
+    __tablename__ = "tickets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    client_id = Column(String, index=True, nullable=False)
+    lead_id = Column(Integer, ForeignKey("leads.id"), nullable=False)
+    question = Column(Text, nullable=False)
+    status = Column(String, default="open", nullable=False)  # open / resolved
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 class KnowledgeSource(Base):
     __tablename__ = "knowledge_sources"

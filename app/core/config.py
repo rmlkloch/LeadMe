@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     PROJECT_NAME: str = "LeadMe API"
     API_V1_STR: str = "/api/v1"
-    DATABASE_URL: str = "sqlite:///./leadme.db"
+    DATABASE_URL: str = "sqlite:///./data/leadme.db"
     OPENAI_API_KEY: str | None = None
     GEMINI_API_KEY: str | None = None
     VECTOR_DB_DIR: str = "./chroma_db"

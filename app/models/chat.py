@@ -13,12 +13,10 @@ class ChatResponse(BaseModel):
     lead_capture_prompt: bool = Field(False, description="Flag indicating whether to display a lead capture form to the user")
 
 class LeadCaptureRequest(BaseModel):
+    client_id: str = Field(..., description="Unique identifier for the client")
     session_id: str = Field(..., description="Unique identifier for the chat session")
-    name: str = Field(..., description="Lead name")
     email: str = Field(..., description="Lead email address")
-    phone: Optional[str] = Field(None, description="Lead contact phone number")
-    company: Optional[str] = Field(None, description="Lead company name")
-    notes: Optional[str] = Field(None, description="Additional context or notes about the lead")
+    unresolved_question: str = Field(..., description="The user's query that triggered the fallback")
 
 class UnresolvedQuery(BaseModel):
     session_id: str = Field(..., description="Unique identifier for the chat session")
