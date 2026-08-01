@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
+    client_id: str = Field(..., description="Unique identifier for the client")
     session_id: str = Field(..., description="Unique identifier for the chat session")
     message: str = Field(..., description="The user's query or message")
 
