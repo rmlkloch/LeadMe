@@ -121,3 +121,4 @@ Scripts/
 *.db-journal
 chroma_db/
 chroma/
+data/
