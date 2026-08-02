@@ -50,3 +50,10 @@ def capture_lead(request: LeadCaptureRequest, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/")
+def get_leads(db: Session = Depends(get_db)):
+    """
+    Get all captured leads.
+    """
+    leads = db.query(Lead).order_by(Lead.created_at.desc()).all()
+    return {"status": "success", "data": leads}

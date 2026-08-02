@@ -48,3 +48,23 @@ def resolve_ticket(request: TicketResolveRequest, db: Session = Depends(get_db))
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/open")
+def get_open_tickets(db: Session = Depends(get_db)):
+    """
+    Get all open tickets that need staff attention.
+    """
+    tickets = db.query(Ticket).filter(Ticket.status == "open").order_by(Ticket.created_at.desc()).all()
+    # We might want to return the lead email as well, but we can do a simple join or return as is
+    result = []
+    for t in tickets:
+        lead = db.query(Lead).filter(Lead.id == t.lead_id).first()
+        result.append({
+            "id": t.id,
+            "client_id": t.client_id,
+            "question": t.question,
+            "status": t.status,
+            "created_at": t.created_at,
+            "lead_email": lead.email if lead else "Unknown"
+        })
+    return {"status": "success", "data": result}
