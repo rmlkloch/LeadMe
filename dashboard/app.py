@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 
-API_URL = "http://127.0.0.1:8000/api/v1"
+API_URL = "https://leadme-backend.onrender.com/api/v1"
 
 st.set_page_config(page_title="LeadMe Admin Console", layout="wide", page_icon="📈")
 

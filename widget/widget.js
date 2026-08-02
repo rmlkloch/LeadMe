@@ -1,6 +1,6 @@
 (function () {
     // LeadMe Chat Widget
-    const API_URL = 'http://127.0.0.1:8000/api/v1';
+    const API_URL = 'https://leadme-backend.onrender.com/api/v1';
     let clientId = 'default_client';
     
     // Generate or retrieve session ID
