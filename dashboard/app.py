@@ -19,6 +19,17 @@ try:
 except Exception:
     st.sidebar.error("Backend API: Offline 🔴")
 
+st.sidebar.divider()
+if st.sidebar.button("Reset Demo Sandbox", type="primary"):
+    try:
+        reset_res = requests.post(f"{API_URL}/system/reset-demo")
+        if reset_res.ok:
+            st.sidebar.success("Demo sandbox reset successfully!")
+        else:
+            st.sidebar.error(f"Failed to reset: {reset_res.text}")
+    except Exception as e:
+        st.sidebar.error(f"Error connecting to backend: {e}")
+
 st.title("LeadMe Admin Dashboard")
 st.markdown("Manage your AI agent's knowledge, view captured leads, and resolve open tickets.")
 

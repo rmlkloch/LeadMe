@@ -31,11 +31,26 @@ tags_metadata = [
     }
 ]
 
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from app.services.reset import reset_demo_environment
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(reset_demo_environment, 'interval', hours=12)
+    scheduler.start()
+    yield
+    # Shutdown
+    scheduler.shutdown()
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version="1.0.0",
     description="24/7 Lead Capture and FAQ Chatbot API Platform",
-    openapi_tags=tags_metadata
+    openapi_tags=tags_metadata,
+    lifespan=lifespan
 )
 
 # Configure CORS middleware
