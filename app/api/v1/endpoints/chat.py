@@ -13,6 +13,8 @@ def chat_message(request: ChatRequest, db: Session = Depends(get_db)):
     """
     result = llm_service.generate_chat_response(query=request.message, client_id=request.client_id)
     
+    print(f"--- DEBUG LLM RAW RESPONSE --- \n{result}\n------------------------------")
+    
     if result.get("needs_fallback"):
         return ChatResponse(
             session_id=request.session_id,

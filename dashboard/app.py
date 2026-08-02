@@ -111,7 +111,7 @@ with tab3:
                             "url": url,
                             "client_id": client_id
                         })
-                        if res.status_code == 201:
+                        if res.ok:
                             st.success(f"Successfully ingested {url}!")
                         else:
                             st.error(f"Failed: {res.text}")
@@ -132,7 +132,7 @@ with tab3:
                             "answer": a,
                             "client_id": client_id
                         })
-                        if res.status_code == 201:
+                        if res.ok:
                             st.success("FAQ added successfully!")
                         else:
                             st.error(f"Failed: {res.text}")

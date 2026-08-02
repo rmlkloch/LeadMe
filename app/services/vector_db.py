@@ -37,7 +37,7 @@ class VectorDBService:
             n_results=n_results,
             where=where
         )
-        return results
+        return results['documents'][0] if results and results.get('documents') and len(results['documents']) > 0 else []
 
     def delete_knowledge_by_client(self, client_id: str):
         """Delete all knowledge associated with a specific client."""
