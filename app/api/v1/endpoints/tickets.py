@@ -65,6 +65,8 @@ def get_open_tickets(db: Session = Depends(get_db)):
             "question": t.question,
             "status": t.status,
             "created_at": t.created_at,
-            "lead_email": lead.email if lead else "Unknown"
+            "lead_email": lead.email if lead else "Unknown",
+            "conversion_score": lead.conversion_score if lead else None,
+            "lead_temperature": lead.lead_temperature if lead else "Unknown"
         })
     return {"status": "success", "data": result}

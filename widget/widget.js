@@ -1,6 +1,6 @@
 (function () {
     // LeadMe Chat Widget
-    const API_URL = 'https://leadme-backend.onrender.com/api/v1';
+    const API_URL = window.LEADME_API_URL || 'https://leadme-backend.onrender.com/api/v1';
     let clientId = 'default_client';
     
     // Generate or retrieve session ID
@@ -461,6 +461,7 @@
             </h4>
             <p style="font-size: 13px; color: #64748b; margin-top: 0; margin-bottom: 12px; line-height: 1.4;">I don't have the exact answer for that right now. Leave your email and our team will get back to you shortly!</p>
             <input type="email" class="leadme-fallback-input" placeholder="Your work email" required/>
+            <textarea id="lead-details" placeholder="Add any additional details (optional)..." style="width: 100%; margin-top: 8px; margin-bottom: 12px; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; font-size: 13px; resize: vertical; box-sizing: border-box; outline: none;"></textarea>
             <button class="leadme-fallback-btn">Send Message</button>
         `;
         messagesEl.appendChild(card);
@@ -468,6 +469,7 @@
         
         const submitBtn = card.querySelector('.leadme-fallback-btn');
         const emailInput = card.querySelector('.leadme-fallback-input');
+        const detailsInput = card.querySelector('#lead-details');
         
         submitBtn.addEventListener('click', async () => {
             const email = emailInput.value;
@@ -479,6 +481,9 @@
             card.innerHTML = '<div style="text-align:center; padding:10px;"><div class="leadme-dot" style="display:inline-block"></div><div class="leadme-dot" style="display:inline-block; margin-left:4px;"></div><div class="leadme-dot" style="display:inline-block; margin-left:4px;"></div></div>';
             
             try {
+                const detailsValue = detailsInput.value.trim();
+                const finalQuestion = unresolvedQuestion + (detailsValue ? "\n\nAdditional Details: " + detailsValue : "");
+                
                 const res = await fetch(`${API_URL}/leads/capture`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -486,7 +491,7 @@
                         client_id: clientId,
                         session_id: sessionId,
                         email: email,
-                        unresolved_question: unresolvedQuestion
+                        unresolved_question: finalQuestion
                     })
                 });
                 

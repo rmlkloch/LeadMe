@@ -30,7 +30,9 @@ class LLMService:
             return {"answer": "", "needs_fallback": True}
 
         # 2. Construct System Prompt
-        prompt = f"""You are a helpful customer support AI. Use the following Context to answer the user's question. Context: {context_text}. If the exact answer is in the Context, answer it naturally and concisely. If the Context is empty or does not contain the answer, you MUST reply with exactly and only: FALLBACK_TRIGGERED.
+        prompt = f"""You are a strict factual routing agent. Do not guess, make up email addresses, or attempt to be polite if the exact answer is missing. If the precise answer to the user's question is not explicitly stated in the provided vector text, you MUST output exactly and only: FALLBACK_TRIGGERED.
+
+Context: {context_text}
 
 User Question: {query}
 """
@@ -44,7 +46,8 @@ User Question: {query}
                         "role": "system",
                         "content": prompt
                     }
-                ]
+                ],
+                temperature=0.0
             )
             answer = response.choices[0].message.content.strip()
             

@@ -33,6 +33,8 @@ class Lead(Base):
     client_id = Column(String, index=True, nullable=False)
     session_id = Column(String, nullable=False)
     email = Column(String, nullable=False)
+    conversion_score = Column(Integer, nullable=True)
+    lead_temperature = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 class Ticket(Base):

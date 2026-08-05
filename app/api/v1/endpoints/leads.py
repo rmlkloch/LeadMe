@@ -4,6 +4,7 @@ from app.core.database import get_db
 from app.models.chat import LeadCaptureRequest
 from app.models.db_models import Lead, Ticket
 from app.services.notifications import notification_service
+from app.services.scoring import generate_lead_score
 
 router = APIRouter()
 
@@ -13,11 +14,17 @@ def capture_lead(request: LeadCaptureRequest, db: Session = Depends(get_db)):
     Capture prospective business lead information and open a support ticket.
     """
     try:
+        # Score the lead
+        score_data = generate_lead_score(request.unresolved_question)
+        print(f"📊 CALCULATED SCORE DATA: {score_data}")
+
         # 1. Save Lead
         new_lead = Lead(
             client_id=request.client_id,
             session_id=request.session_id,
-            email=request.email
+            email=request.email,
+            conversion_score=score_data.get("conversion_score"),
+            lead_temperature=score_data.get("lead_temperature")
         )
         db.add(new_lead)
         db.commit()

@@ -1,8 +1,9 @@
+import os
 import streamlit as st
 import requests
 import pandas as pd
 
-API_URL = "https://leadme-backend.onrender.com/api/v1"
+API_URL = os.getenv("API_URL", "https://leadme-backend.onrender.com/api/v1")
 
 st.set_page_config(page_title="LeadMe Admin Console", layout="wide", page_icon="📈")
 
@@ -54,9 +55,27 @@ with tab1:
             
             if leads:
                 df = pd.DataFrame(leads)
-                # Keep interesting columns
+                
+                # Format temperature with emojis
+                if "lead_temperature" in df.columns:
+                    def format_temp(val):
+                        if not val: return val
+                        v = str(val).lower()
+                        if "hot" in v: return f"🔥 {val}"
+                        if "warm" in v: return f"☀️ {val}"
+                        if "cold" in v: return f"❄️ {val}"
+                        return val
+                    df["lead_temperature"] = df["lead_temperature"].apply(format_temp)
+                
+                # Keep interesting columns including new metrics
+                columns_to_keep = ["id", "client_id", "session_id", "email", "created_at"]
+                if "conversion_score" in df.columns:
+                    columns_to_keep.append("conversion_score")
+                if "lead_temperature" in df.columns:
+                    columns_to_keep.append("lead_temperature")
+
                 if "id" in df.columns:
-                    df = df[["id", "client_id", "session_id", "email", "created_at"]]
+                    df = df[columns_to_keep]
                 st.dataframe(df, use_container_width=True)
             else:
                 st.info("No leads captured yet.")
@@ -82,6 +101,17 @@ with tab2:
             else:
                 for t in tickets:
                     with st.expander(f"Ticket #{t['id']} from {t['lead_email']} (Pending)", expanded=True):
+                        temp = t.get('lead_temperature', 'Unknown')
+                        score = t.get('conversion_score', 'N/A')
+                        
+                        emoji = ""
+                        if temp:
+                            temp_lower = str(temp).lower()
+                            if "hot" in temp_lower: emoji = "🔥 "
+                            elif "warm" in temp_lower: emoji = "☀️ "
+                            elif "cold" in temp_lower: emoji = "❄️ "
+                        
+                        st.markdown(f"**Lead Score:** `{score}` | **Temperature:** {emoji}{temp}")
                         st.markdown(f"**Question:** {t['question']}")
                         st.caption(f"Created At: {t['created_at']}")
                         
