@@ -1,14 +1,21 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-from app.core.config import settings
 
-# SQLite needs connect_args={"check_same_thread": False} to run on multiple threads
+# 1. Read DATABASE_URL from environment with fallback
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/leadme.db")
+
+# 2. Render provides 'postgres://', but SQLAlchemy requires 'postgresql://'
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# 3. SQLite specific arguments
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
+if DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 engine = create_engine(
-    settings.DATABASE_URL,
+    DATABASE_URL,
     connect_args=connect_args
 )
 
